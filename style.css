@@ -1,0 +1,27 @@
+body {
+    font-family: monospace;
+    background-color: gray;
+}
+
+h1 {
+    text-align: center;
+}
+
+td {
+    border: 2px solid black;
+    padding: 20px;
+}
+
+table {
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+hr {
+    background-color: black;
+    border: 1px solid black;
+}
+
+.alive {
+    background-color: black;
+}
