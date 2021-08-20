@@ -8,8 +8,8 @@ h1 {
 }
 
 td {
-    border: 2px solid black;
-    padding: 20px;
+    border: 1px solid black;
+    padding: 7px;
 }
 
 table {
@@ -24,4 +24,8 @@ hr {
 
 .alive {
     background-color: rgb(0, 0, 0);
+}
+
+.dying {
+    background-color: black;
 }
