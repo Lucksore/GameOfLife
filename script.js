@@ -35,6 +35,7 @@ class PlayField {
     #GetId(HeightIndex, WidthIndex) {
         return HeightIndex.toString() + '-' + WidthIndex.toString();
     }
+
     SimulateRandomLife(FillPersentage) {
         this.intervalID = setInterval(() => {
             const P = new Promise((resolve, reject) => {
@@ -63,9 +64,10 @@ class PlayField {
     TerminateLife() {
         clearInterval(this.intervalID);
     }
-    #CheckNeighbours(HeightIndex, WidthIndex) {
+    CountNeighbours(HeightIndex, WidthIndex) {
         let lifeCount = 0;
         let tempElement = null;
+
 
         tempElement = document.getElementById(`${(HeightIndex - 1).toString()}-${(WidthIndex - 1).toString()}`); 
         if (tempElement != null && tempElement.classList.contains(this.AliveCellName)) lifeCount++;
@@ -88,110 +90,63 @@ class PlayField {
 
         return lifeCount;
     }
-    SimulateLife(WaitTime = 300) {
+
+    SimulateLife() {
         this.intervalID = setInterval(() => {
             let iteration = new Promise((resolve, reject) => 
             {
                 setTimeout(() => {
-                    this.#FirstStep();
-                    resolve(WaitTime);
-                }, WaitTime)
+                    this.CheckCells();
+                    resolve();
+                }, this.RefreshTime)
                 
-            }).then(WaitTime=> 
-            {
+            }).then(() => {
                 setTimeout(() => {
-                    this.#SecondStep2()
-                }, WaitTime);
+                    this.#CreateNewGeneration();
+                    console.log("Iteration completed.");
+                }, this.RefreshTime);
             }); 
-        }, WaitTime * 2);
-        
+        }, this.RefreshTime * 3);
     }
-    #FirstStep() {
-        let elements = document.querySelectorAll('.' + this.AliveCellName);
-        
-        elements.forEach(e => {
-            let id = e.id.split('-');
-            let n = this.#CheckNeighbours(+id[0], +id[1]);
-            if (n < 2 || n > 3) {
-                e.classList.remove(this.AliveCellName);
-                e.classList.add(this.DyingCellName);
-            };
-        });
-    }
-
-    #SecondStep() {
-        let elements = document.querySelectorAll('.' + this.AliveCellName);
-        
-        elements.forEach(element => {
-            let id = element.id.split('-');
-            let h = +id[0];
-            let w = +id[1];
-            for (let i = h - 1; i <= h + 1; i++) {
-                if (this.#CheckNeighbours(i, w - 1) == 3) {
-                    let cell = document.getElementById(this.#GetId(i, w - 1))
-                    if (cell != null) cell.classList.add(this.NewCellName);
-                }
-                if (this.#CheckNeighbours(i, w + 1) == 3) {
-                    let cell = document.getElementById(this.#GetId(i, w + 1));
-                    if (cell != null) cell.classList.add(this.NewCellName);
-                }
-                if (i != h && this.#CheckNeighbours(i, w) == 3) { 
-                    let cell = document.getElementById(this.#GetId(i, w));
-                    if (cell != null) document.getElementById(this.#GetId(i, w)).classList.add(this.NewCellName);
+    
+    CheckCells() {
+        for (let h = 0; h < this.Height; h++) {
+            for (let w = 0; w < this.Width; w++) {
+                if (this.CountNeighbours(h, w) == 3) {
+                    let cell = document.getElementById(this.#GetId(h, w));
+                    if (!cell.classList.contains(this.AliveCellName)) cell.classList.add(this.NewCellName);
                 }
             }
-        }) 
-        elements = document.querySelectorAll('.' + this.NewCellName);
-        elements.forEach(element => {
-            element.classList.add(this.AliveCellName);
-            element.classList.remove(this.NewCellName);
+        }
+        document.querySelectorAll('.' + this.AliveCellName).forEach(cell => {
+            let id = cell.id.split('-');
+            let n = this.CountNeighbours(+id[0], +id[1]); 
+            if (n < 2 || n > 3) {
+                cell.classList.add(this.DyingCellName);
+            }
         });
     }
 
-    #SecondStep2() {
-        let elements = document.querySelectorAll('.' + this.AliveCellName);
-        elements.forEach(e => {
-            let id = e.id.split('-'),
-                h = +id[0],
-                w = +id[1],
-                cell = null,
-                n = 0;
-
-            n = this.#CheckNeighbours(h - 1, w - 1);
-            if (n == 3) document.getElementById(this.#GetId(h - 1, w - 1)).classList.add(this.NewCellName);
-            n = this.#CheckNeighbours(h - 1, w);
-            if (n == 3) document.getElementById(this.#GetId(h - 1, w)).classList.add(this.NewCellName);
-            n = this.#CheckNeighbours(h - 1, w + 1);
-            if (n == 3) document.getElementById(this.#GetId(h - 1, w + 1)).classList.add(this.NewCellName);
-
-            n = this.#CheckNeighbours(h, w - 1);
-            if (n == 3) document.getElementById(this.#GetId(h, w - 1)).classList.add(this.NewCellName);
-            n = this.#CheckNeighbours(h, w + 1);
-            if (n == 3) document.getElementById(this.#GetId(h , w + 1)).classList.add(this.NewCellName);
-
-            n = this.#CheckNeighbours(h + 1, w - 1);
-            if (n == 3) document.getElementById(this.#GetId(h + 1, w - 1)).classList.add(this.NewCellName);
-            n = this.#CheckNeighbours(h + 1, w);
-            if (n == 3) document.getElementById(this.#GetId(h + 1, w)).classList.add(this.NewCellName);
-            n = this.#CheckNeighbours(h + 1, w + 1);
-            if (n == 3) document.getElementById(this.#GetId(h + 1, w + 1)).classList.add(this.NewCellName);
-        })
-
-        document.querySelectorAll('.' + this.NewCellName).forEach(e => {
-            e.classList.add(this.AliveCellName);
-            e.classList.remove(this.NewCellName);
+    #CreateNewGeneration() {
+        document.querySelectorAll('.' + this.DyingCellName).forEach(c => {
+            c.classList.remove(this.DyingCellName);
+            c.classList.remove(this.AliveCellName);
         });
-
-        document.querySelectorAll('.' + this.DyingCellName).forEach(e => {
-            e.classList.remove(this.DyingCellName);
+        document.querySelectorAll('.' + this.NewCellName).forEach(c => {
+            c.classList.remove(this.NewCellName);
+            c.classList.add(this.AliveCellName);
         });
     }
+    
 }
 
-const Field = new PlayField("tbody", 30, 30, 35, "alive");
+const Field = new PlayField("tbody", 20, 20, 100, "alive");
 Field.CreateTable();
-Field.RandomLife(15);
-Field.SimulateLife(300);
+setTimeout(() => {
+    Field.SimulateLife();
+}, 8000);
+
+
 
 
 

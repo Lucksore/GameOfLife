@@ -9,7 +9,7 @@ h1 {
 
 td {
     border: 1px solid black;
-    padding: 7px;
+    padding: 20px;
 }
 
 table {
@@ -22,10 +22,6 @@ hr {
     border: 1px solid rgb(56, 56, 56);
 }
 
-.alive {
+.alive, .dying {
     background-color: rgb(0, 0, 0);
-}
-
-.dying {
-    background-color: black;
 }
