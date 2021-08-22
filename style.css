@@ -9,7 +9,7 @@ h1 {
 
 td {
     border: 1px solid black;
-    padding: 20px;
+    padding: 5px;
 }
 
 table {
@@ -24,4 +24,9 @@ hr {
 
 .alive, .dying {
     background-color: rgb(0, 0, 0);
+}
+
+#sidePanelSwitch {
+    background-color: gray;
+    border: 1px solid black;
 }
