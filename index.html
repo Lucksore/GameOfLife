@@ -8,14 +8,23 @@
     <title>Game of Life</title>
 </head>
 <body>
-    <h1>Game of Life</h1>
+    <!-- <h1>Game of Life</h1> -->
     <hr>
-    <button id='sidePanelSwitch'>></button>
-    <table>
-        <tbody>
+    <div class='workSpace'>
+        <div class='panel'>
+            <button id='startButton'>Start</button>
+            <button id='stopButton'>Stop</button>
+            <br>
+            <button id='clearButton'>Clear cells</button>
+            <button id='randomButton'>Fill random cells</button>
+            <input maxlength='3'><label>%</label>
+        </div>
+        <table class='playField'>
+            <tbody>
 
-        </tbody>
-    </table>
-    <script type="module" src="./js/main.js"></script>
+            </tbody>
+        </table>
+    </div>
+    <script src="./js/main.js"></script>
 </body>
 </html>
